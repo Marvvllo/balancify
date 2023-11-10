@@ -17,10 +17,12 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+          fontFamily: 'Jost',
+          textTheme: TextTheme(bodyMedium: TextStyle(fontSize: 16.0)),
           colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColor.primary,
-        brightness: Brightness.dark,
-      )),
+            seedColor: AppColor.primary,
+            brightness: Brightness.dark,
+          )),
       home: AppNavigation(),
     );
   }
