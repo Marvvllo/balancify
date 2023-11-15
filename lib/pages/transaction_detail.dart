@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:balancify/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:balancify/constants/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,12 +8,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 class TransactionDetailPage extends StatelessWidget {
   const TransactionDetailPage({
     super.key,
-    required this.title,
-    required this.desc,
-    required this.amount,
+    required this.transaction,
   });
 
-  final String title, desc, amount;
+  final Transaction transaction;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +31,11 @@ class TransactionDetailPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text(title),
-          Text(desc),
-          Text(amount),
+          Text(transaction.title),
+          Text(transaction.desc),
+          Text(transaction.date),
+          Text(transaction.time),
+          Text(transaction.amount),
         ],
       ),
     );
