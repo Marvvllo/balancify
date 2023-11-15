@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:balancify/pages/add_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'constants/colors.dart';
@@ -23,6 +24,7 @@ class MainApp extends StatelessWidget {
             seedColor: AppColor.primary,
             brightness: Brightness.dark,
           )),
+      color: AppColor.dark,
       home: AppNavigation(),
     );
   }
@@ -77,6 +79,21 @@ class AppNavigationState extends State<AppNavigation>
             height: 24,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddTransactionPage()),
+              );
+            },
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          )
+        ],
         backgroundColor: AppColor.dark,
         elevation: 0,
       ),

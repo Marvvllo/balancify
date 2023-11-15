@@ -134,6 +134,8 @@ class TransactionsPage extends StatelessWidget {
             ],
           ),
         ),
+
+        // List Transaksi
       ],
     );
   }
