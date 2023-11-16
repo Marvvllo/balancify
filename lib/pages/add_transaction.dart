@@ -48,9 +48,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     if (picked != null) {
       setState(() {
         TimeOfDay selectedTime = picked;
-        String hour = selectedTime.hour.toString();
-        String minute = selectedTime.minute.toString();
-        String time = '$hour:$minute';
+        String time =
+            '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
         timeController.text = time;
       });
     }
@@ -59,17 +58,21 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   // Shared Prefs
 
   Future<void> addTransaction(Transaction newTransaction) async {
-    List<Transaction>? transactionsList = List.empty(growable: true);
-
     final prefs = await SharedPreferences.getInstance();
-    final String? transactionsString = prefs.getString('transactions');
-    if (transactionsString != null) {
-      transactionsList = jsonDecode(transactionsString);
-    }
-    transactionsList?.add(newTransaction);
+    List<Transaction> transactions = List.empty(growable: true);
 
-    var encodedList = Transaction.encode(transactionsList as List<Transaction>);
-    await prefs.setString('transactions', encodedList);
+    List<String>? transactionListString = prefs.getStringList('transactions');
+    if (transactionListString != null) {
+      transactions = transactionListString
+          .map((transaction) => Transaction.fromJson(jsonDecode(transaction)))
+          .toList();
+    }
+
+    transactions.add(newTransaction);
+    transactionListString = transactions
+        .map((transaction) => jsonEncode(transaction.toJson()))
+        .toList();
+    prefs.setStringList('transactions', transactionListString);
   }
 
   @override
@@ -158,6 +161,12 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     enabled: false,
                     keyboardType: TextInputType.text,
                     controller: date,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Date cannot be empty.";
+                      }
+                      return null;
+                    },
                     onTap: () {
                       _selectDate(context);
                     },
@@ -183,9 +192,16 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   child: TextFormField(
                     style: TextStyle(fontSize: 24),
                     textAlign: TextAlign.center,
+                    // readOnly: true,
                     enabled: false,
                     keyboardType: TextInputType.text,
                     controller: timeController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Time cannot be empty.";
+                      }
+                      return null;
+                    },
                     onTap: () {
                       _selectDate(context);
                     },
@@ -253,18 +269,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             amount: amount.text,
                           ),
                         );
-                        //   Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //           builder: (_) => TransactionDetailPage(
-                        //                 transaction: Transaction(
-                        //                   title: title.text,
-                        //                   desc: desc.text,
-                        //                   date: date.text,
-                        //                   time: timeController.text,
-                        //                   amount: amount.text,
-                        //                 ),
-                        //               )));
+                        Navigator.pop(context);
                       }
                     },
                     child: Text(

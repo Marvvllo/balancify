@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Transaction {
   const Transaction({
     required this.title,
@@ -11,18 +9,19 @@ class Transaction {
 
   final String title, desc, date, time, amount;
 
-  static Map<String, dynamic> toMap(Transaction transaction) => {
-        'title': transaction.title,
-        'desc': transaction.desc,
-        'date': transaction.date,
-        'time': transaction.time,
-        'amount': transaction.amount,
-      };
-
-  static String encode(List<Transaction> transactions) => jsonEncode(
-        transactions
-            .map<Map<String, dynamic>>(
-                (transaction) => Transaction.toMap(transaction))
-            .toList(),
+  factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
+        title: json['title'],
+        desc: json['desc'],
+        date: json['date'],
+        time: json['time'],
+        amount: json['amount'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'desc': desc,
+        'date': date,
+        'time': time,
+        'amount': amount,
+      };
 }
