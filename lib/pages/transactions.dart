@@ -25,6 +25,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
   getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     getTransactions();
+    // print(transactions[0].amount);
   }
 
   getTransactions() {
@@ -57,7 +58,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
               // Food Total
               Container(
                 decoration: BoxDecoration(
-                  color: AppColor.lightGrey,
+                  color: AppColor.darkGrey,
                   borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
                 child: Padding(
@@ -74,7 +75,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: Icon(
-                            Icons.dining_outlined,
+                            Icons.fastfood_sharp,
                             size: 30.0,
                             color: Colors.green,
                           ),
@@ -95,7 +96,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
               // Travel Total
               Container(
                 decoration: BoxDecoration(
-                  color: AppColor.lightGrey,
+                  color: AppColor.darkGrey,
                   borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
                 child: Padding(
@@ -130,10 +131,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
               SizedBox(width: 16.0),
 
-              // Travel Total
+              // Shopping Total
               Container(
                 decoration: BoxDecoration(
-                  color: AppColor.lightGrey,
+                  color: AppColor.darkGrey,
                   borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
                 child: Padding(
@@ -150,7 +151,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: Icon(
-                            Icons.shopping_cart_outlined,
+                            Icons.shopping_bag,
                             size: 30.0,
                             color: Colors.blue,
                           ),
@@ -158,7 +159,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       ),
                       SizedBox(height: 8.0),
                       Text(
-                        'Travel',
+                        'Shopping',
                       ),
                       Text('Rp800.000'),
                     ],
@@ -176,9 +177,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
           child: Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: ListView.separated(
+            child: ListView.builder(
               itemCount: transactions.length,
-              separatorBuilder: (context, index) => SizedBox(height: 8.0),
+              // separatorBuilder: (context, index) => SizedBox(height: 16.0),
               itemBuilder: ((context, index) {
                 return InkWell(
                   onTap: () {
@@ -189,28 +190,12 @@ class _TransactionsPageState extends State<TransactionsPage> {
                               transaction: transactions[index]),
                         ));
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xff1e1e1e),
-                        borderRadius: BorderRadius.circular(16.0)),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Row(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.blue[200]?.withOpacity(0.2),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(1000)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Icon(
-                              Icons.shopping_cart_outlined,
-                              size: 30.0,
-                              color: Colors.blue,
-                            ),
-                          ),
+                        CategoryIcon(
+                          category: transactions[index].category,
                         ),
 
                         SizedBox(width: 16.0),
@@ -227,15 +212,25 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                   Text(
                                     transactions[index].title,
                                     textAlign: TextAlign.start,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w600),
                                   ),
                                   Text(transactions[index].date),
                                 ],
                               ),
 
                               // Amount
-                              Text(
-                                Helper.stringToIdr(
-                                    transactions[index].amount, 0),
+                              Row(
+                                children: [
+                                  Text(
+                                    Helper.stringToCompactIdr(
+                                        transactions[index].amount),
+                                  ),
+                                  Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: Colors.grey[400],
+                                  )
+                                ],
                               ),
                             ],
                           ),
@@ -250,5 +245,43 @@ class _TransactionsPageState extends State<TransactionsPage> {
         )
       ],
     );
+  }
+}
+
+class CategoryIcon extends StatelessWidget {
+  const CategoryIcon({super.key, required this.category});
+  final String category;
+
+  @override
+  Widget build(BuildContext context) {
+    IconData categoryIcon = Icons.fastfood;
+    Color? iconColor;
+    switch (category) {
+      case "Food":
+        categoryIcon = Icons.fastfood;
+        iconColor = Colors.green[400];
+        break;
+      case "Travel":
+        categoryIcon = Icons.flight;
+        iconColor = Colors.orange[400];
+        break;
+      case "Shopping":
+        categoryIcon = Icons.shopping_bag;
+        iconColor = Colors.blue[400];
+        break;
+    }
+    return Container(
+        decoration: BoxDecoration(
+          color: iconColor?.withOpacity(0.2),
+          borderRadius: BorderRadius.all(Radius.circular(1000)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(
+            categoryIcon,
+            size: 24.0,
+            color: iconColor,
+          ),
+        ));
   }
 }

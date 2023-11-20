@@ -1,27 +1,30 @@
 class Transaction {
-  const Transaction({
+  Transaction({
+    required this.id,
     required this.title,
     required this.desc,
     required this.date,
-    required this.time,
+    required this.category,
     required this.amount,
   });
 
-  final String title, desc, date, time, amount;
+  final String id, title, desc, date, category, amount;
 
   factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
+        id: json['id'],
         title: json['title'],
         desc: json['desc'],
         date: json['date'],
-        time: json['time'],
+        category: json['category'],
         amount: json['amount'],
       );
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'title': title,
         'desc': desc,
         'date': date,
-        'time': time,
+        'category': category,
         'amount': amount,
       };
 }

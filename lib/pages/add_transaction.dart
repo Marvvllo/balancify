@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTransactionPage extends StatefulWidget {
   const AddTransactionPage({super.key});
@@ -22,8 +23,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   final title = TextEditingController();
   final desc = TextEditingController();
   final date = TextEditingController();
-  final timeController = TextEditingController();
   final amount = TextEditingController();
+  // final category = TextEditingController();
+  final categoryController = TextEditingController();
+  String? selectedCategory = "Food";
+  List<String> categories = [
+    'Food',
+    'Travel',
+    'Shopping',
+  ];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -36,21 +44,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       setState(() {
         DateTime selectedDate = picked;
         date.text = DateFormat.yMd().format(selectedDate);
-      });
-    }
-  }
-
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (picked != null) {
-      setState(() {
-        TimeOfDay selectedTime = picked;
-        String time =
-            '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
-        timeController.text = time;
       });
     }
   }
@@ -97,6 +90,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           key: _formKey,
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   "Add transactions",
@@ -113,6 +107,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   controller: title,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.title),
                     labelText: "Title",
                     border: OutlineInputBorder(
                       borderSide:
@@ -134,6 +129,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   controller: desc,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.description_outlined),
                     labelText: "Description",
                     border: OutlineInputBorder(
                       borderSide:
@@ -174,6 +170,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       date.text = val as String;
                     },
                     decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.date_range_outlined),
                       labelText: "Date",
                       border: OutlineInputBorder(
                         borderSide:
@@ -184,38 +181,23 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 ),
                 SizedBox(height: 16.0),
 
-                // Time Picker
-                InkWell(
-                  onTap: () {
-                    _selectTime(context);
+                // Category Picker
+                DropdownMenu<String>(
+                  controller: categoryController,
+                  width: MediaQuery.of(context).size.width - 32,
+                  initialSelection: selectedCategory,
+                  onSelected: (String? value) {
+                    // This is called when the user selects an item.
+                    setState(() {
+                      selectedCategory = value!;
+                    });
+                    print("test");
                   },
-                  child: TextFormField(
-                    style: TextStyle(fontSize: 24),
-                    textAlign: TextAlign.center,
-                    // readOnly: true,
-                    enabled: false,
-                    keyboardType: TextInputType.text,
-                    controller: timeController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Time cannot be empty.";
-                      }
-                      return null;
-                    },
-                    onTap: () {
-                      _selectDate(context);
-                    },
-                    onSaved: (String? val) {
-                      date.text = val as String;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Time",
-                      border: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: AppColor.primary, width: 2.0),
-                      ),
-                    ),
-                  ),
+                  dropdownMenuEntries:
+                      categories.map<DropdownMenuEntry<String>>((String value) {
+                    return DropdownMenuEntry<String>(
+                        value: value, label: value);
+                  }).toList(),
                 ),
 
                 SizedBox(height: 16.0),
@@ -223,9 +205,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 // Amount Field
                 TextFormField(
                   controller: amount,
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.attach_money_outlined),
                     labelText: "Amount",
+                    hintText: "Add - on amount spent",
                     border: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: AppColor.primary, width: 2.0),
@@ -262,10 +246,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       if (_formKey.currentState!.validate()) {
                         addTransaction(
                           Transaction(
+                            id: Uuid().v4(),
                             title: title.text,
                             desc: desc.text,
                             date: date.text,
-                            time: timeController.text,
+                            category: categoryController.text,
                             amount: amount.text,
                           ),
                         );

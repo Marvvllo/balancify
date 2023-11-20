@@ -34,7 +34,7 @@ class TransactionDetailPage extends StatelessWidget {
           Text(transaction.title),
           Text(transaction.desc),
           Text(transaction.date),
-          Text(transaction.time),
+          Text(transaction.category),
           Text(transaction.amount),
         ],
       ),

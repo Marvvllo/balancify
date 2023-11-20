@@ -85,7 +85,8 @@ class AppNavigationState extends State<AppNavigation>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const AddTransactionPage()),
+                  builder: (context) => const AddTransactionPage(),
+                ),
               );
             },
             icon: Icon(
