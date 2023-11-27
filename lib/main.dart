@@ -50,7 +50,6 @@ class AppNavigationState extends State<AppNavigation>
   static const List<Tab> _navigationTabs = [
     Tab(icon: Icon(Icons.home)),
     Tab(icon: Icon(Icons.receipt_long)),
-    Tab(icon: Icon(Icons.person_2)),
   ];
 
   @override
@@ -103,7 +102,6 @@ class AppNavigationState extends State<AppNavigation>
         children: const [
           Icon(Icons.directions_transit),
           TransactionsPage(),
-          Icon(Icons.directions_bike),
         ],
       ),
       bottomNavigationBar: Material(

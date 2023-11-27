@@ -21,6 +21,9 @@ class TransactionsPage extends StatefulWidget {
 class _TransactionsPageState extends State<TransactionsPage> {
   late SharedPreferences prefs;
   List<Transaction> transactions = List.empty(growable: true);
+  int totalFood = 0;
+  int totalTravel = 0;
+  int totalShopping = 0;
 
   getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
@@ -36,7 +39,23 @@ class _TransactionsPageState extends State<TransactionsPage> {
           .toList();
     }
 
-    setState(() {});
+    setState(() {
+      transactions.forEach((transaction) {
+        switch (transaction.category) {
+          case 'Food':
+            totalFood += int.parse(transaction.amount);
+            break;
+          case 'Travel':
+            totalTravel += int.parse(transaction.amount);
+            break;
+          case 'Shopping':
+            totalShopping += int.parse(transaction.amount);
+            break;
+          default:
+            break;
+        }
+      });
+    });
   }
 
   @override
@@ -85,7 +104,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       Text(
                         'Food',
                       ),
-                      Text('Rp250.000'),
+                      Text(Helper.stringToIdr(totalFood.toString(), 0)),
                     ],
                   ),
                 ),
@@ -123,7 +142,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       Text(
                         'Travel',
                       ),
-                      Text('Rp800.000'),
+                      Text(Helper.stringToIdr(totalTravel.toString(), 0)),
                     ],
                   ),
                 ),
@@ -161,7 +180,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       Text(
                         'Shopping',
                       ),
-                      Text('Rp800.000'),
+                      Text(Helper.stringToIdr(totalShopping.toString(), 0)),
                     ],
                   ),
                 ),
@@ -242,7 +261,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
               }),
             ),
           ),
-        )
+        ),
       ],
     );
   }
