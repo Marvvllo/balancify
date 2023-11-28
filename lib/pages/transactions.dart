@@ -41,6 +41,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
           .toList();
     }
 
+    transactions.sort((b, a) => a.date.compareTo(b.date));
+
     setState(() {
       transactions.forEach((transaction) {
         switch (transaction.category) {
@@ -58,6 +60,24 @@ class _TransactionsPageState extends State<TransactionsPage> {
         }
       });
     });
+  }
+
+  Future<void> removeTransaction(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<Transaction> transactions = List.empty(growable: true);
+
+    List<String>? transactionListString = prefs.getStringList('transactions');
+    if (transactionListString != null) {
+      transactions = transactionListString
+          .map((transaction) => Transaction.fromJson(jsonDecode(transaction)))
+          .toList();
+    }
+
+    transactions.removeWhere((transaction) => transaction.id == id);
+    transactionListString = transactions
+        .map((transaction) => jsonEncode(transaction.toJson()))
+        .toList();
+    prefs.setStringList('transactions', transactionListString);
   }
 
   @override
@@ -203,6 +223,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
               // separatorBuilder: (context, index) => SizedBox(height: 16.0),
               itemBuilder: ((context, index) {
                 return InkWell(
+                  onLongPress: () {
+                    removeTransaction(transactions[index].id);
+                  },
                   onTap: () {
                     Navigator.push(
                         context,
