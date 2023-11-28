@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:balancify/pages/add_transaction.dart';
+import 'package:balancify/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'constants/colors.dart';
@@ -100,7 +101,7 @@ class AppNavigationState extends State<AppNavigation>
       body: TabBarView(
         controller: _bottomTabController,
         children: const [
-          Icon(Icons.directions_transit),
+          HomePage(),
           TransactionsPage(),
         ],
       ),

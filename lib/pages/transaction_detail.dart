@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:balancify/category_icon.dart';
 import 'package:balancify/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:balancify/constants/colors.dart';
@@ -35,6 +36,7 @@ class TransactionDetailPage extends StatelessWidget {
           Text(transaction.desc),
           Text(transaction.date),
           Text(transaction.category),
+          CategoryIcon(category: transaction.category),
           Text(transaction.amount),
         ],
       ),
