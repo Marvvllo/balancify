@@ -33,7 +33,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     // print(transactions[0].amount);
   }
 
-  getTransactions() {
+  Future<void> getTransactions() async {
     List<String>? transactionListString = prefs.getStringList('transactions');
     if (transactionListString != null) {
       transactions = transactionListString
@@ -44,6 +44,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
     transactions.sort((b, a) => a.date.compareTo(b.date));
 
     setState(() {
+      totalFood = 0;
+      totalTravel = 0;
+      totalShopping = 0;
       transactions.forEach((transaction) {
         switch (transaction.category) {
           case 'Food':
@@ -218,73 +221,77 @@ class _TransactionsPageState extends State<TransactionsPage> {
           child: Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: ListView.builder(
-              itemCount: transactions.length,
-              // separatorBuilder: (context, index) => SizedBox(height: 16.0),
-              itemBuilder: ((context, index) {
-                return InkWell(
-                  onLongPress: () {
-                    removeTransaction(transactions[index].id);
-                  },
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TransactionDetailPage(
-                            transaction: transactions[index],
+            child: RefreshIndicator(
+              onRefresh: getTransactions,
+              child: ListView.builder(
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: transactions.length,
+                // separatorBuilder: (context, index) => SizedBox(height: 16.0),
+                itemBuilder: ((context, index) {
+                  return InkWell(
+                    onLongPress: () {
+                      removeTransaction(transactions[index].id);
+                    },
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TransactionDetailPage(
+                              transaction: transactions[index],
+                            ),
+                          ));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        children: [
+                          CategoryIcon(
+                            category: transactions[index].category,
                           ),
-                        ));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      children: [
-                        CategoryIcon(
-                          category: transactions[index].category,
-                        ),
 
-                        SizedBox(width: 16.0),
+                          SizedBox(width: 16.0),
 
-                        // Texts
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Title and Date
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    transactions[index].title,
-                                    textAlign: TextAlign.start,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
-                                  ),
-                                  Text(transactions[index].date),
-                                ],
-                              ),
+                          // Texts
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Title and Date
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      transactions[index].title,
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(transactions[index].date),
+                                  ],
+                                ),
 
-                              // Amount
-                              Row(
-                                children: [
-                                  Text(
-                                    Helper.stringToCompactIdr(
-                                        transactions[index].amount),
-                                  ),
-                                  Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: Colors.grey[400],
-                                  )
-                                ],
-                              ),
-                            ],
+                                // Amount
+                                Row(
+                                  children: [
+                                    Text(
+                                      Helper.stringToCompactIdr(
+                                          transactions[index].amount),
+                                    ),
+                                    Icon(
+                                      Icons.keyboard_arrow_right,
+                                      color: Colors.grey[400],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }),
+                  );
+                }),
+              ),
             ),
           ),
         ),
