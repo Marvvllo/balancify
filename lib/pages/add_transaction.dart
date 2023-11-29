@@ -24,7 +24,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   final desc = TextEditingController();
   final date = TextEditingController();
   final amount = TextEditingController();
-  // final category = TextEditingController();
   final categoryController = TextEditingController();
   String? selectedCategory = "Food";
   List<String> categories = [

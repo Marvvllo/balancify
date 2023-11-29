@@ -84,10 +84,12 @@ class AppNavigationState extends State<AppNavigation>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const AddTransactionPage(),
-                ),
-              );
+                MaterialPageRoute(builder: (context) {
+                  return const AddTransactionPage();
+                }),
+              ).then((value) {
+                _bottomTabController.animateTo(1);
+              });
             },
             icon: Icon(
               Icons.add,
