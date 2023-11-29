@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 
 class CategoryIcon extends StatelessWidget {
-  const CategoryIcon({super.key, required this.category});
+  CategoryIcon({super.key, required this.category, this.size = 24.0});
   final String category;
+  double? size;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class CategoryIcon extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Icon(
           categoryIcon,
-          size: 24.0,
+          size: size,
           color: iconColor,
         ),
       ),
