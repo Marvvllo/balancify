@@ -47,7 +47,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
       totalFood = 0;
       totalTravel = 0;
       totalShopping = 0;
-      transactions.forEach((transaction) {
+      for (var transaction in transactions) {
         switch (transaction.category) {
           case 'Food':
             totalFood += int.parse(transaction.amount);
@@ -61,7 +61,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
           default:
             break;
         }
-      });
+      }
     });
   }
 

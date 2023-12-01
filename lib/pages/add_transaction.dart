@@ -190,7 +190,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     setState(() {
                       selectedCategory = value!;
                     });
-                    print("test");
                   },
                   dropdownMenuEntries:
                       categories.map<DropdownMenuEntry<String>>((String value) {
